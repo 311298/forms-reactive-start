@@ -1,0 +1,40 @@
+1) create from variable simply -> signupForm:FormGroup and import ReactiveFormsModule in app.module.ts
+
+2)create form structure -> in ngOnInit
+this.signupForm = new FormGroup({ 'username' : new FormControl ('Danny') , .... etc})
+
+3)In form tag FormGroup = "signupForm"
+in each input for which we created the structure FormControlName = 'username' -> same as ts variable inside the structure (FormGroup)
+
+4)submit form -> (ngSubmit)="onSubmit()" ; we can access it without local variable
+onSubmit() -> console.log( this.signupForm )
+
+5)validators -> first parameter prefilled value, second parameter is validators for example ; Validators.Required or [ Validators.Required,Validators.Required ]
+
+6)same as td-forms we can group here also simply ; inside the signupForm ->
+'userData' : new FormGroup({ 'username' : new FormControl() , .... etc. })
+and in html -> create a new div, if we have grouped 2 or more and FormGroupName = "userData"
+and change whereever username and other access directly by simple userData.username
+
+7)For input FormControl;
+add new key in FormGroup -> 'hobbies' : new FormArray([])
+new function for submit -> ( this.signupForm.get('hobbies').control as FormArray ).push( new FormControl(null,Validators.Required) )
+new function for showing input in console -> get controls(){ return (this.signupForm.get('hobbies') as FormArray).controls }
+in html; add new div FormArrayName="hobbies"
+function for submit -> (click)="addhobby()"
+function to loop -> *ngFor = "let hobby of controls ; let i = index" ; div tag
+fucntion to bind data -> [FormControlName]="i" ; [] because i is not string but local variable ; input tag with type="text"
+
+8)custom validator ; create a function with parameter FormControl and return type we object of key value pair ; { [variableName : variableType ] : boolean } ; in code we take scenario black list for username
+then if ( condition !== -1) return ( 'variableName' : true )
+else return null
+this.functionName.bind(this) -> to make javascript understand where to take function from properly
+
+9)custom validatiors condition not working search it
+
+10)async custom validator function in ts and place that function signupForm
+
+11)statuschanges() and valuechanges() are two hooks that we can listen to as subscriber ; valuechanges() -> each time we make changes in form while statuschanges() -> give status on invalid , pending and valid 
+above 2 are used to closely watch the forms
+
+12)setvalue cause problem problem appears to be missing some form input default initial value setting ; stack overflow
