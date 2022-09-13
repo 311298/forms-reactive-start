@@ -1,0 +1,139 @@
+Reactive form approach
+
+=================================================================
+
+203. reactive setup
+
+signupForm:FormGroup inside the ts file.
+To declare the form variable whom we will interact.
+
+Also import the ReactiveFormsModule in app.module.ts
+
+204. creating the form in code file.
+
+we need to make form function on load of the page therefore ngOnInit is the best way where we will initialize the form.
+
+ngOnInit(){
+    this.signupForm=new FormGroup({
+        'username':new FormControl(null), //1
+        'email':new FormControl(null),
+        'gender':new FormControl('male')
+    })
+}
+
+//1 ;  we can keep the username w/o under-quote also
+with the above approach our form is created inside the code.
+
+205. syncing html and form
+
+<form [formGroup]="signupForm">
+it tell angular not to make the own object rather than use the FormGroup we created.
+
+<input ... ... formControlName="username"/>
+like ngModel it connect with the username inside the code where we created the form.
+same thing for email and gender
+
+206. submitting the form
+
+<form .... (ngSubmit)="onSubmit()">
+
+and in code 
+
+onSubmit(){
+    console.log(this.signupForm) // we willa able to see the object created inside the console
+}
+
+207. adding the validation
+
+signupForm: .... {
+    'username': new FormControl(null, Validators.required),
+    'email': new FormControl(null, [Validators.required,Validators.email])
+}
+
+for FormControl email we gave 2 Validators in array which are required and email format.
+
+208. getting access to controls
+
+suppose we want to add the warning message upon the wrong message
+
+<span *ngIf="!signupForm.get('username').valid && signupForm.get('username')/touched "> please enter the valid username </span>
+
+above is code how we access the form.
+And we can add the css as we did inside the template driven form approach.
+
+209. grouping the controls
+
+As in template driven form we use the ngModelGroup="userData".
+In reactive form we do that thing inside the code.
+
+this.signupForm:new FormGroup({
+    'userData':new FormGroup({
+        'username': new FormControl(...),
+        'email':new FormControl(...)
+    }),
+    gender:new FormControl(...)
+})
+
+we need to reflect this inside the template also.
+
+wrap the code template inside the div and add the formGroupName, like below
+
+<div formGroupName="userData"> same name we defined inside the signupForm in code
+
+and code we written for warning message for email and username we have change that also, like below
+
+<span *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username')/touched "> please enter the valid username </span>
+
+210. fixing the Bug
+
+look for code and explaination inside the update.component.txt
+below one looks to me better approach.
+
+211. array of FormControl
+
+create a button which will trigger a click event to add the array of hobbies inside the form
+
+<button .... (click)="onAddHobbies()">
+
+in the code we will make changes in 2 places,
+
+this.signupForm:new FormGroup({
+    ....,
+    ....,
+    'hobbies':new FormArray([]) // here instead of form empty array we could have added the new FormControl()
+})
+
+remember it the FormControl which is taking the value for each form-field input, whereas in template driven form we had the ngModel
+
+As now the form is intialised it yet to be created to addition of  hobbies
+
+onAddHobbies(){
+    (<FormArray>this.signupForm.get('hobbies')).push(new FormControl(null,Validators.required))
+
+    or 
+
+    (this.signupFrom.get('hobbies') as FormArray).push(new FormControl(null, Validators.required))
+}
+
+as now we have our logic in place to tackle the input when pushed, but we have not created the input form and sync it to formgroup inside the code.
+
+<div FormArrayName="hobbies">
+    <button......>add hobbies</button......>
+        <div *ngFor="let x of arrayControls; let i=index">
+            <input type="text" [formControlName]="i"/>
+        </div>
+</div>
+
+get arrayControls(){
+    return (this.signupForm.get('hobbies') as FormArray).controls
+}
+
+211. custom validator in reactive forms
+
+read the code and understand in app.ts and app.html
+
+212. using the error codes
+
+213. async custom validator
+
+214. set and patch values are same is template driven approach
